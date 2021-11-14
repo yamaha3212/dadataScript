@@ -15,7 +15,6 @@ token = "b25c5e62f5bf23de40e1c61791284509d35a000f"
 secret = "c8d18a173c1f13bdb57212e72dfc3685fe91f92a"
 
 
-@logger.catch
 def data_parse(raw_adddress):
     with Dadata(token, secret) as dadata:
         autosuggested_data = dadata.suggest(name="address", query=raw_adddress)
@@ -42,10 +41,15 @@ def data_parse(raw_adddress):
 
 root = ET.Element("root")
 
+creationFlag = []
 
 def multithread_generation(argument):
-    exhaust_address = data_parse(arguments[argument])
-    ET.SubElement(root, "Addr" + str(argument - 1), name="Addr" + str(argument - 1)).text = exhaust_address
+    try:
+        exhaust_address = data_parse(arguments[argument])
+        creationFlag.append(exhaust_address)
+        ET.SubElement(root, "Addr" + str(argument - 1), name="Addr" + str(argument - 1)).text = exhaust_address
+    except Exception:
+        logger.critical("Dadata server request error, query is " + str(arguments[argument]) + " query number = " + str(argument-1))
 
 
 threads = list()
@@ -56,15 +60,15 @@ for n in range(len(arguments)):
         x = threading.Thread(target=multithread_generation, args=(n,))
         threads.append(x)
         x.start()
-        logger.info("Request for " + arguments[n] + " successful")
 for index, thread in enumerate(threads):
     thread.join()
 
 filename = str(arguments[1]) + ".xml"
 
 xml_string = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
-with open(filename, "w", encoding='utf-8') as f:
-    f.write(xml_string)
-logger.info("Created xml document with id " + arguments[1])
+if len(creationFlag) == len(arguments) - 2:
+    with open(filename, "w", encoding='utf-8') as f:
+        f.write(xml_string)
+    logger.info("Created xml document with id " + arguments[1] + ". Successful query")
 
 print("--- %s seconds ---" % (time.time() - start_time))
