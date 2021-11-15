@@ -17,31 +17,32 @@ except IndexError:
     logger.critical("There is no uid in arguments")
 
 token = "b25c5e62f5bf23de40e1c61791284509d35a000f"
-secret = "c8d18a173c1f13bdb57212e72dfc3685fe91f92a"
 
 
 def data_parse(raw_adddress):
-    with Dadata(token, secret) as dadata:
+    with Dadata(token) as dadata:
         autosuggested_data = dadata.suggest(name="address", query=raw_adddress)
-        clean_data = dadata.clean(name="address", source=autosuggested_data[1]['value'])
+    if not autosuggested_data:
+        logger.warning("Dadata returns null result because of bad query. Query: " + str(raw_adddress))
+    else:
+        address_array = [autosuggested_data[0]['data']['postal_code'], autosuggested_data[0]['data']['federal_district'], autosuggested_data[0]['data']['region'],
+                     autosuggested_data[0]['data']['city'], autosuggested_data[0]['data']['settlement'], autosuggested_data[0]['data']['street'], autosuggested_data[0]['data']['house'],
+                     autosuggested_data[0]['data']['block'], autosuggested_data[0]['data']['flat']]
 
-    address_array = [clean_data['postal_code'], clean_data['federal_district'], clean_data['region'],
-                     clean_data['city_area'], clean_data['city_district'], clean_data['street'], clean_data['house'],
-                     clean_data['block'], clean_data['flat']]
+        address_string = ""
+        i = 0
+        for element in address_array:
+            if element is None:
+                address_array[i] = ","
+                address_string = address_string + address_array[i]
+            else:
+                address_string = " " + address_string + address_array[i] + ","
+            i = i + 1
 
-    address_string = ""
-    i = 0
-    for element in address_array:
-        if element is None:
-            address_array[i] = ","
-            address_string = address_string + address_array[i]
-        else:
-            address_string = " " + address_string + address_array[i] + ","
-        i = i + 1
+        if address_string[-2] != ",":
+            address_string = address_string[0:-1]
 
-    if address_string[-2] != ",":
-        address_string = address_string[0:-1]
-    return address_string
+        return address_string
 
 
 root = ET.Element("root")
@@ -76,6 +77,6 @@ if len(creationFlag) == len(arguments) - 2 and creationFlag:
         f.write(xml_string)
     logger.info("Created xml document with id " + arguments[1])
 if len(arguments) < 3:
-    logger.warning("No addresses in arguments which should contains address, query uid is " + arguments[1] + ". XML doesn't generated")
+    logger.warning("No addresses in arguments which should contains address. XML doesn't generated")
 
 print("--- %s seconds ---" % (time.time() - start_time))
