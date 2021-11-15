@@ -24,6 +24,8 @@ def data_parse(raw_adddress):
         autosuggested_data = dadata.suggest(name="address", query=raw_adddress)
     if not autosuggested_data:
         logger.warning("Dadata returns null result because of bad query. Query: " + str(raw_adddress))
+        address_string = ",,,,,,,,,"
+        return address_string
     else:
         address_array = [autosuggested_data[0]['data']['postal_code'], autosuggested_data[0]['data']['federal_district'], autosuggested_data[0]['data']['region'],
                      autosuggested_data[0]['data']['city'], autosuggested_data[0]['data']['settlement'], autosuggested_data[0]['data']['street'], autosuggested_data[0]['data']['house'],
