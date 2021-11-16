@@ -6,15 +6,19 @@ import threading
 import time
 from loguru import logger
 
-logger.add("dadatascrypt.log", format="{time} {level} {message}", level="DEBUG")
+logger.add("dadatascrypt.log", format="{time} {level} {message}", level="DEBUG", encoding='utf-8')
 
 start_time = time.time()
 arguments = sys.argv
+
+logger.info("=======================================================")
 
 try:
     str(arguments[1])
 except IndexError:
     logger.critical("There is no uid in arguments")
+    logger.info("============================================ with error")
+    sys.exit()
 
 token = "b25c5e62f5bf23de40e1c61791284509d35a000f"
 
@@ -58,6 +62,7 @@ def multithread_generation(argument):
         ET.SubElement(root, "Addr" + str(argument - 1), name="Addr" + str(argument - 1)).text = exhaust_address
     except Exception as ex:
         logger.critical("Query error (dadata), query uid is " + arguments[1] + " " + str(ex))
+        logger.info("============================================ with error")
 
 
 threads = list()
@@ -71,14 +76,20 @@ for n in range(len(arguments)):
 for index, thread in enumerate(threads):
     thread.join()
 
+
 filename = str(arguments[1]) + ".xml"
+
 
 xml_string = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
 if len(creationFlag) == len(arguments) - 2 and creationFlag:
     with open(filename, "w", encoding='utf-8') as f:
         f.write(xml_string)
     logger.info("Created xml document with id " + arguments[1])
+    logger.info("============================================ " + str(arguments[1]))
 if len(arguments) < 3:
     logger.warning("No addresses in arguments which should contains address. XML doesn't generated")
+    logger.info("============================================ with error")
+
+
 
 print("--- %s seconds ---" % (time.time() - start_time))
