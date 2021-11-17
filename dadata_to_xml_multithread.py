@@ -3,15 +3,13 @@ import xml.etree.cElementTree as ET
 from xml.dom import minidom
 import sys
 import threading
-import time
 from loguru import logger
 
-logger.add("dadatascrypt.log", format="{time} {level} {message}", level="DEBUG", encoding='utf-8')
+logger.add("dadatascrypt.log", format="{time:[YYYY-MM-DD HH-mm-ss,SSS Z]} {level} {message}", level="DEBUG", encoding='utf-8')
 
-start_time = time.time()
 arguments = sys.argv
 
-logger.info("=======================================================")
+logger.info("================================================ STARTED")
 
 try:
     str(arguments[1])
@@ -42,7 +40,7 @@ def data_parse(raw_adddress):
                 address_array[i] = ","
                 address_string = address_string + address_array[i]
             else:
-                address_string = " " + address_string + address_array[i] + ","
+                address_string = address_string + address_array[i] + ","
             i = i + 1
 
         if address_string[-2] != ",":
@@ -54,6 +52,7 @@ def data_parse(raw_adddress):
 root = ET.Element("root")
 
 creationFlag = []
+
 
 def multithread_generation(argument):
     try:
@@ -80,7 +79,7 @@ for index, thread in enumerate(threads):
 filename = str(arguments[1]) + ".xml"
 
 
-xml_string = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
+xml_string = minidom.parseString(ET.tostring(root)).toprettyxml()
 if len(creationFlag) == len(arguments) - 2 and creationFlag:
     with open(filename, "w", encoding='utf-8') as f:
         f.write(xml_string)
@@ -90,6 +89,3 @@ if len(arguments) < 3:
     logger.warning("No addresses in arguments which should contains address. XML doesn't generated")
     logger.info("============================================ with error")
 
-
-
-print("--- %s seconds ---" % (time.time() - start_time))
