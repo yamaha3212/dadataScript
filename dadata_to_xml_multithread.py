@@ -5,7 +5,7 @@ import sys
 import threading
 from loguru import logger
 
-logger.add("dadatascrypt.log", format="{time:[YYYY-MM-DD HH-mm-ss,SSS Z]} {level} {message}", level="DEBUG", encoding='utf-8')
+logger.add("dadatascrypt.log", format="{time:DD.MM.YYYY HH:mm:ss Z} {level} {message}", level="DEBUG", encoding='utf-8')
 
 arguments = sys.argv
 root = ET.Element("root")
