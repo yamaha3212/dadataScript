@@ -8,11 +8,13 @@ from loguru import logger
 logger.add("dadatascrypt.log", format="{time:[YYYY-MM-DD HH-mm-ss,SSS Z]} {level} {message}", level="DEBUG", encoding='utf-8')
 
 arguments = sys.argv
+root = ET.Element("root")
+creationFlag = []
 
 logger.info("================================================ STARTED")
 
 try:
-    str(arguments[1])
+    filename = str(arguments[1]) + ".xml"
 except IndexError:
     logger.critical("There is no uid in arguments")
     logger.info("============================================ with error")
@@ -49,11 +51,6 @@ def data_parse(raw_adddress):
         return address_string
 
 
-root = ET.Element("root")
-
-creationFlag = []
-
-
 def multithread_generation(argument):
     try:
         exhaust_address = data_parse(arguments[argument])
@@ -76,16 +73,11 @@ for index, thread in enumerate(threads):
     thread.join()
 
 
-filename = str(arguments[1]) + ".xml"
-
-
-xml_string = minidom.parseString(ET.tostring(root)).toprettyxml()
 if len(creationFlag) == len(arguments) - 2 and creationFlag:
-    with open(filename, "w", encoding='utf-8') as f:
-        f.write(xml_string)
+    with open(filename, "w", encoding='utf-8') as xmlFile:
+        xmlFile.write(minidom.parseString(ET.tostring(root)).toprettyxml())
     logger.info("Created xml document with id " + arguments[1])
     logger.info("============================================ " + str(arguments[1]))
 if len(arguments) < 3:
     logger.warning("No addresses in arguments which should contains address. XML doesn't generated")
     logger.info("============================================ with error")
-
