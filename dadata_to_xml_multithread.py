@@ -33,7 +33,7 @@ def data_parse(raw_adddress):
     else:
         address_array = [
             autosuggested_data[0]['data']['postal_code'],
-            autosuggested_data[0]['data']['region_kladr_id'],
+            autosuggested_data[0]['data']['region_kladr_id'][0:2],
             autosuggested_data[0]['data']['federal_district'],
             autosuggested_data[0]['data']['area'],
             autosuggested_data[0]['data']['city'],
