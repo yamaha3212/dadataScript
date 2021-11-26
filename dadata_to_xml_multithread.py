@@ -31,9 +31,18 @@ def data_parse(raw_adddress):
         address_string = ",,,,,,,,,"
         return address_string
     else:
-        address_array = [autosuggested_data[0]['data']['postal_code'], autosuggested_data[0]['data']['federal_district'], autosuggested_data[0]['data']['region'],
-                     autosuggested_data[0]['data']['city'], autosuggested_data[0]['data']['settlement'], autosuggested_data[0]['data']['street'], autosuggested_data[0]['data']['house'],
-                     autosuggested_data[0]['data']['block'], autosuggested_data[0]['data']['flat']]
+        address_array = [
+            autosuggested_data[0]['data']['postal_code'],
+            autosuggested_data[0]['data']['region_kladr_id'],
+            autosuggested_data[0]['data']['federal_district'],
+            autosuggested_data[0]['data']['area'],
+            autosuggested_data[0]['data']['city'],
+            autosuggested_data[0]['data']['settlement'],
+            autosuggested_data[0]['data']['street'],
+            autosuggested_data[0]['data']['house'],
+            autosuggested_data[0]['data']['block'],
+            autosuggested_data[0]['data']['flat']
+        ]
 
         address_string = ""
         i = 0
