@@ -5,14 +5,25 @@ import sys
 import threading
 from loguru import logger
 import os
+import inspect
 
 logger.add("dadatascrypt.log", format="{time:DD.MM.YYYY HH:mm:ss Z} {level} {message}", level="DEBUG", encoding='utf-8')
 
+
+def get_script_dir(follow_symlinks=True):
+    if getattr(sys, 'frozen', False):
+        path = os.path.abspath(sys.executable)
+    else:
+        path = inspect.getabsfile(get_script_dir)
+    if follow_symlinks:
+        path = os.path.realpath(path)
+    return os.path.dirname(path)
+
+
 try:
-    os.mkdir('xml')
+    os.mkdir(get_script_dir() + os.path.sep + 'xml')
 except FileExistsError:
     pass
-os.chdir('xml')
 
 arguments = sys.argv
 root = ET.Element("root")
@@ -89,7 +100,7 @@ for index, thread in enumerate(threads):
 
 
 if len(creationFlag) == len(arguments) - 2 and creationFlag:
-    with open(filename, "w", encoding='utf-8') as xmlFile:
+    with open(get_script_dir() + os.path.sep + 'xml' + os.path.sep + filename, "w", encoding='utf-8') as xmlFile:
         xmlFile.write(minidom.parseString(ET.tostring(root)).toprettyxml())
     logger.info("Created xml document with id " + arguments[1])
     logger.info("============================================ " + str(arguments[1]))
