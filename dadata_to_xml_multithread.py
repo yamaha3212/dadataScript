@@ -37,8 +37,7 @@ def data_parse(raw_adddress):
             autosuggested_data[0]['data']['federal_district'],
             autosuggested_data[0]['data']['area'],
             autosuggested_data[0]['data']['city'],
-            autosuggested_data[0]['data']['settlement'],
-            autosuggested_data[0]['data']['street'],
+            autosuggested_data[0]['data']['street_with_type'],
             autosuggested_data[0]['data']['house'],
             autosuggested_data[0]['data']['block'],
             autosuggested_data[0]['data']['flat']
