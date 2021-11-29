@@ -4,8 +4,15 @@ from xml.dom import minidom
 import sys
 import threading
 from loguru import logger
+import os
 
 logger.add("dadatascrypt.log", format="{time:DD.MM.YYYY HH:mm:ss Z} {level} {message}", level="DEBUG", encoding='utf-8')
+
+try:
+    os.mkdir('xml')
+except FileExistsError:
+    pass
+os.chdir('xml')
 
 arguments = sys.argv
 root = ET.Element("root")
