@@ -49,14 +49,22 @@ def data_parse(raw_adddress):
         address_string = ",,,,,,,,,"
         return address_string
     else:
+        settlement = autosuggested_data[0]['data']['settlement']
+        street = autosuggested_data[0]['data']['street']
+        
+        if settlement is not None:
+            settlement = autosuggested_data[0]['data']['settlement'] + ' ' + autosuggested_data[0]['data']['settlement_type']
+        if street is not None:
+            street = autosuggested_data[0]['data']['street'] + ' ' + autosuggested_data[0]['data']['street_type']
+
         address_array = [
             autosuggested_data[0]['data']['postal_code'],
             autosuggested_data[0]['data']['region_kladr_id'][0:2],
             autosuggested_data[0]['data']['federal_district'],
             autosuggested_data[0]['data']['area_with_type'],
             autosuggested_data[0]['data']['city'],
-            autosuggested_data[0]['data']['settlement'] + ' ' + autosuggested_data[0]['data']['settlement_type'],
-            autosuggested_data[0]['data']['street'] + ' ' + autosuggested_data[0]['data']['street_type'],
+            settlement,
+            street,
             autosuggested_data[0]['data']['house'],
             autosuggested_data[0]['data']['block'],
             autosuggested_data[0]['data']['flat']
